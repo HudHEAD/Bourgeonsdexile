@@ -2,6 +2,10 @@
 
 extends Node2D
 
+@export_category("Scrolling parameters")
+@export var lock_x : bool = false
+@export var lock_y : bool = false
+
 #TODO put in InputManager
 var mouse_sensitivity = 5.0
 
@@ -13,7 +17,8 @@ var mouse_acc : Vector2 = Vector2.ZERO
 
 func _process(delta: float) -> void:
 	if dragging:
-		self.position += _mouse_look()
+		var offset = _get_offset()
+		self.position += offset
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select_element"):
@@ -31,7 +36,15 @@ func _start_dragging():
 func _stop_dragging():
 	dragging = false
 
-
+## Returns offset to apply, taking into account locked axis
+func _get_offset() -> Vector2:
+	var offset = _mouse_look()
+	if lock_x:
+		offset.x = 0.0
+	if lock_y:
+		offset.y = 0.0
+	
+	return offset
 
 #TODO put in InputManager
 
